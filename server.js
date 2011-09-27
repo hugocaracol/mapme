@@ -31,6 +31,11 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
+io.configure(function() {
+	io.set("transports", ["xhr-polling", "flashsocket", "json-polling"]);
+});
+
+
 // Routes
 
 app.get('/', function(req, res){
