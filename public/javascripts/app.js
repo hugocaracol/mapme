@@ -42,7 +42,7 @@ $(function(){
 		shorten();
 	});
 	
-	var socket = io.connect('http://localhost:3000');
+	var socket = io.connect('http://localhost');
 	socket.on('location',function(location){
 		var latlong = new google.maps.LatLng(location.latitude,location.longitude);
 
