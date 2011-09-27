@@ -42,7 +42,7 @@ $(function(){
 		shorten();
 	});
 	
-	var socket = io.connect('http://localhost');
+	var socket = io.connect('http://hugocaracol.no.de');
 	socket.on('location',function(location){
 		var latlong = new google.maps.LatLng(location.latitude,location.longitude);
 
