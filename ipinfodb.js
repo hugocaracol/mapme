@@ -7,6 +7,7 @@ function getGeoInfo(res){
 }
 
 function ip2geo(ip,callback) {
+	console.log("Looking up: "+ip);
 	var url = "api.ipinfodb.com"
     var site = http.createClient(80, url);
     site.on('error', function(err) {

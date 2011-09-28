@@ -72,12 +72,13 @@ io.sockets.on('connection', function(socket){
 		//joins socket to a room
 		room = room_to_join;
 		socket.join(room.room+'_'+room.type);
-		console.log(address.address+" joined room: "+room.room+'_'+room.type);
+		console.log(room.ip+" joined room: "+room.room+'_'+room.type);
 		if(room.type == 'client'){
 			//gObj = {country: 'Portugal', latitude:Math.floor(Math.random()*37), longitude:-1*Math.floor(Math.random()*122)};
-				var gObj = ipinfodb.ip2geo(address.address,function(gObj){
+				var gObj = ipinfodb.ip2geo(room.ip,function(gObj){
 							console.log("Country: " + gObj.country);
 							console.log("Lat: " + gObj.latitude);
+							console.log("Long: " + gObj.longitude);
 							console.log("Long: " + gObj.longitude);
 
 							socket.broadcast.to(room.room+'_world').emit('location',gObj);
