@@ -24,28 +24,12 @@ function removeMarker(gObj){
 }
 
 $(function(){
-	$('#source').focus();
 
-	var shorten = function(){
-		$.ajax({
-			url: 'shorten',
-			data: { key: $('#source').val() },
-			type: 'GET',
-			success: function(json){
-				$('#source').val(json.key);
-			}
-		});
-	}
-
-
-	$('#btShorten').click(function(){
-		shorten();
-	});
-	
-	var socket = io.connect('http://hugocaracol.no.de');
+	//var socket = io.connect('http://hugocaracol.no.de');
+	var socket = io.connect('http://localhost:3000');
+	socket.emit('join_room',{ room: 'localhost', type: 'world' });
 	socket.on('location',function(location){
 		var latlong = new google.maps.LatLng(location.latitude,location.longitude);
-
 		var image = new google.maps.MarkerImage(
 			'images/yellow_dot.png',
 			new google.maps.Size(12,12),
@@ -66,8 +50,7 @@ $(function(){
 		marker.setMap(map);
 		markersArray.push(marker);
 		locationsArray.push(location);
-		$('#connected').append(location.country+'<br/>');
-//		socket.emit('my other event',{ my: 'data' });
+
 	});
 	socket.on('disconnected',function(gObj){
 		removeMarker(gObj);

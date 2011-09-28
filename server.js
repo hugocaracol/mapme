@@ -40,13 +40,13 @@ io.configure(function() {
 
 app.get('/', function(req, res){
   res.render('index', {
-    title: 'Express'
+    title: 'users online'
   });
 });
 
 app.get('/about', function(req,res){
 	res.render('about',{
-		title:'About me'
+		title:'Client page'
 	})
 });
 
@@ -62,26 +62,46 @@ app.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket){
 	var address = socket.handshake.address;
+	var room;
+	var gObj;
+
 	console.log("New connection from " + address.address + ":" + address.port);
 
-/*
-	var gObj = ipinfodb.ip2geo('178.166.70.205',function(gObj){
-				console.log("Country: " + gObj.country);
-				console.log("Lat: " + gObj.latitude);
-				console.log("Long: " + gObj.longitude);
-				socket.broadcast.emit('location',gObj);
-				socket.emit('location',gObj);
-			});
-*/
-	var gObj = {country: 'Portugal', latitude:Math.floor(Math.random()*37), longitude:-1*Math.floor(Math.random()*122)};
-	socket.emit('location',gObj);
-	socket.broadcast.emit('location',gObj);
+	
+	socket.on('join_room', function(room_to_join){
+		//joins socket to a room
+		room = room_to_join;
+		socket.join(room.room+'_'+room.type);
+		var address = socket.handshake.address;
+		console.log(address.address+" joined room: "+room.room+'_'+room.type);
+		if(room.type == 'client'){
+			gObj = {country: 'Portugal', latitude:Math.floor(Math.random()*37), longitude:-1*Math.floor(Math.random()*122)};
+			socket.broadcast.to(room.room+'_world').emit('location',gObj);
+			console.log('location was broadcasted to room: ' + room.room + '_world');
+		}
+			/*
+				var gObj = ipinfodb.ip2geo('178.166.70.205',function(gObj){
+							console.log("Country: " + gObj.country);
+							console.log("Lat: " + gObj.latitude);
+							console.log("Long: " + gObj.longitude);
+							socket.broadcast.emit('location',gObj);
+							socket.emit('location',gObj);
+						});
+			*/
+	});
+
 
 	socket.on('disconnect', function(){
-		socket.broadcast.emit('disconnected',gObj);
-		console.log("user disconnected. sending obj");
+		//check wich type of user left the room. if its a world_room user, it does nothing. otherwise...
+		socket.leave("/"+room.room+'_'+room.type);
+		console.log("Leaving room: " + room.room+' Type:'+room.type);
+		if(room.type == 'client'){
+			socket.broadcast.to(room.room+'_world').emit('disconnected',gObj);
+			console.log("user disconnected");
+		}
+//		console.log("user disconnected from room:" + room.room + ". sending obj...");
 	});
-	
+
 
 	socket.on('my other event', function(data){
 		console.log(data);
