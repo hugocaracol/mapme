@@ -3,7 +3,7 @@ var http = require('http');
 function getGeoInfo(res){
         //OK;;74.125.45.100;US;UNITED STATES;CALIFORNIA;MOUNTAIN VIEW;94043;37.3956;-122.076;-08:00
         var fields = res.split(";");
-        return { "country": fields[4],"latitude":fields[8],"longitude":fields[9]};
+        return { success: true, "country": fields[4],"latitude":fields[8],"longitude":fields[9]};
 }
 
 function ip2geo(ip,callback) {

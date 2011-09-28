@@ -1,4 +1,9 @@
+var mapOnline = {
 
-var socket = io.connect('http://localhost:3000');
-socket.emit('join_room',{ room: 'localhost', type:'client' });
+	connect: function (roomName){
+		var socket = io.connect('http://hugocaracol.no.de');
+		socket.emit('join_room',{ room: roomName, type:'client' });
+	}
+};
 
+mapOnline.connect('localhost');
